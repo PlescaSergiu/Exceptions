@@ -8,7 +8,9 @@ public class Student_Catalog implements Student_Interface {
 
     private Long CNP;
     private boolean valid;
-    private int age;
+
+    private int age; // calculate with method calculateAge
+
     //private List<Constructor_Student> studentWithoutCNP = new ArrayList<>();
 
     private Map<Long, Constructor_Student> studentsCatalog = new HashMap<>();
@@ -16,6 +18,7 @@ public class Student_Catalog implements Student_Interface {
     @Override
     public void addStudent(Long CNP, char sex, String firstName, String lastName, int year, int month, int day) {
         valid = true;
+        age = calculateAge(year,month,day);
         try {
             validateCNP(CNP);
             try {
@@ -62,6 +65,8 @@ public class Student_Catalog implements Student_Interface {
 
     }
 
+
+    // delete stundet by CNP
     @Override
     public void deleteStudent(Long CNP) {
         try {
@@ -79,11 +84,12 @@ public class Student_Catalog implements Student_Interface {
 
     }
 
-    private int calculateAge(Constructor_Student student) {
+        //calculate age with give parameters
+
+    private int calculateAge(int year, int month, int day) {
         LocalDate today = LocalDate.now();  //Today's date
-        LocalDate birthday = LocalDate.of(student.getYear(),student.getMonth(),student.getDay());  //Birth date
+        LocalDate birthday = LocalDate.of(year,month,day);  //Birth date
         Period p = Period.between(birthday, today);
-        System.out.println(p.getYears());
         return age=p.getYears();
 
     }
@@ -137,6 +143,7 @@ public class Student_Catalog implements Student_Interface {
 
     }
     private void validateAge() throws ValidationException{
+        if()
 
     }
 }
