@@ -11,48 +11,26 @@ public class Student_Catalog implements Student_Interface {
 
     private int age; // calculate with method calculateAge
 
-    //private List<Constructor_Student> studentWithoutCNP = new ArrayList<>();
+    private List<Constructor_Student> studentWithoutCNP = new ArrayList<>();
 
     private Map<Long, Constructor_Student> studentsCatalog = new HashMap<>();
+    private Map<Long, List<Constructor_Student>> studentsCatalog1 = new HashMap<>();
+
 
     @Override
     public void addStudent(Long CNP, char sex, String firstName, String lastName, int year, int month, int day) {
         valid = true;
-        age = calculateAge(year,month,day);
+        age = calculateAge(year, month, day);
         try {
-            validateCNP(CNP);
-            try {
-                validateFirstNameAndLastName(firstName);
-                try {
-                    validateFirstNameAndLastName(lastName);
-                    try {
-                        validateSex(sex,CNP);
-                        try {
-                            validateCatalog(valid);
-
-                            studentsCatalog.put(CNP,new Constructor_Student(sex, firstName, lastName, year, month, day));
-                            //studentWithoutCNP.add(new Constructor_Student(sex, firstName, lastName, year, month, day));
-
-
-                        } catch (ValidationException e) {
-                            System.out.println(e.getMessage());
-                        }
-                    } catch (ValidationException e) {
-                        System.out.println(e.getMessage());
-                        valid = false;
-                    }
-                } catch (ValidationException e) {
-                    System.out.println(e.getMessage());
-                    valid = false;
-
-                }
-
-            } catch (ValidationException e) {
-                System.out.println(e.getMessage());
-                valid = false;
-
-            }
-
+            validateCNP(CNP, year, month, day);
+            validateAge(year);
+            validateFirstNameAndLastName(firstName);
+            validateFirstNameAndLastName(lastName);
+            validateSex(sex, CNP);
+            validateCatalog(valid);
+            studentsCatalog.put(CNP, new Constructor_Student(sex, firstName, lastName, year, month, day));
+            studentWithoutCNP.add(new Constructor_Student(sex, firstName, lastName, year, month, day));
+            studentsCatalog1.put(CNP,studentWithoutCNP);
 
 
         } catch (ValidationException e) {
@@ -65,17 +43,15 @@ public class Student_Catalog implements Student_Interface {
 
     }
 
-
-    // delete stundet by CNP
+    // delete student by CNP
     @Override
     public void deleteStudent(Long CNP) {
         try {
             validateDeletStudent(CNP);
             studentsCatalog.remove(CNP);
-        }catch (ValidationException e){
+        } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     @Override
@@ -84,13 +60,12 @@ public class Student_Catalog implements Student_Interface {
 
     }
 
-        //calculate age with give parameters
-
+    //calculate age with give parameters
     private int calculateAge(int year, int month, int day) {
         LocalDate today = LocalDate.now();  //Today's date
-        LocalDate birthday = LocalDate.of(year,month,day);  //Birth date
+        LocalDate birthday = LocalDate.of(year, month, day);  //Birth date
         Period p = Period.between(birthday, today);
-        return age=p.getYears();
+        return age = p.getYears();
 
     }
 
@@ -104,7 +79,7 @@ public class Student_Catalog implements Student_Interface {
         }
     }
 
-    private void validateCNP(Long CNP) throws ValidationException {
+    private void validateCNP(Long CNP, int year, int month, int day) throws ValidationException {
 
         if (CNP == null || !Arrays.asList(13).contains(String.valueOf(CNP).length())) {
             throw new ValidationException("Invalid CNP length");
@@ -112,7 +87,13 @@ public class Student_Catalog implements Student_Interface {
         if (String.valueOf(CNP).matches("[0-9]")) {
             throw new ValidationException("Invalid CNP length");
         }
+        if (String.valueOf(CNP).charAt(1) != String.valueOf(year).charAt(2) || String.valueOf(CNP).charAt(2) != String.valueOf(year).charAt(3)) {
+            throw new ValidationException("CNP eror");
+        }
+/*        if (String.valueOf(CNP).charAt(1) != String.valueOf(month).charAt(2) || String.valueOf(CNP).charAt(2) != String.valueOf(year).charAt(3)) {
 
+
+        }*/
     }
 
     private void validateSex(char sex, long CNP) throws ValidationException {
@@ -135,15 +116,22 @@ public class Student_Catalog implements Student_Interface {
             throw new ValidationException("First name must contains only aphabetic letters");
         }
     }
-    
-    private void validateDeletStudent(Long CNP) throws ValidationException{
-        if(CNP == null || !studentsCatalog.containsKey(CNP)){
+
+    private void validateDeletStudent(Long CNP) throws ValidationException {
+        if (CNP == null || !studentsCatalog.containsKey(CNP)) {
             throw new ValidationException("You cant delete this student");
         }
 
     }
-    private void validateAge() throws ValidationException{
-        if()
+
+    private void validateAge(int year) throws ValidationException {
+        if ((year > LocalDate.now().getYear() - 18) || year < 1900) {
+            throw new ValidationException("A wrong year");
+        }
+    }
+
+    @Override
+    public void listByFirstNameAndBirthday() {
 
     }
 }

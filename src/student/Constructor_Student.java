@@ -1,5 +1,7 @@
 package student;
 
+import javax.print.DocFlavor;
+
 public class Constructor_Student extends Student_Catalog   {
 
     private char sex;
@@ -8,6 +10,7 @@ public class Constructor_Student extends Student_Catalog   {
     private int year;
     private int month;
     private int day;
+    private String birthday;
 
     public Constructor_Student() {
     }
@@ -45,15 +48,18 @@ public class Constructor_Student extends Student_Catalog   {
         return day;
     }
 
+
+    public String getBirthday() {
+        return birthday = (year+"/"+month+"/"+day);
+    }
+
     @Override
     public String toString() {
         return "Student{" +
                 "sex=" + sex +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", birthday=" + year +
-                "/" + month +
-                "/" + day +
+                ", birthday='" + birthday + '\'' +
                 '}';
     }
 }

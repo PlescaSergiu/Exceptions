@@ -9,6 +9,8 @@ public interface Student_Interface {
     void deleteStudent(Long CNP);
 
     void listStudent();
+    void listByFirstNameAndBirthday();
 
 
-}
+
+    }
