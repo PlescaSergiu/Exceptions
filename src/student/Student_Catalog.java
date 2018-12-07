@@ -3,43 +3,25 @@ package student;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
+
 
 public class Student_Catalog implements Student_Interface {
 
-    private Long CNP;
-    private boolean valid;
+    private static Logger LOGGER = getLogger(Student_Catalog.class.getName());
 
     private int age; // calculate with method calculateAge
 
-    private List<Constructor_Student> studentWithoutCNP = new ArrayList<>();
-
     private Map<Long, Constructor_Student> studentsCatalog = new HashMap<>();
-    private Map<Long, List<Constructor_Student>> studentsCatalog1 = new HashMap<>();
 
 
     @Override
     public void addStudent(Long CNP, char sex, String firstName, String lastName, int year, int month, int day) {
-        valid = true;
-        age = calculateAge(year, month, day);
-        try {
-            validateCNP(CNP, year, month, day);
-            validateAge(year);
-            validateFirstNameAndLastName(firstName);
-            validateFirstNameAndLastName(lastName);
-            validateSex(sex, CNP);
-            validateCatalog(valid);
-            studentsCatalog.put(CNP, new Constructor_Student(sex, firstName, lastName, year, month, day));
-            studentWithoutCNP.add(new Constructor_Student(sex, firstName, lastName, year, month, day));
-            studentsCatalog1.put(CNP,studentWithoutCNP);
+        Constructor_Student student = new Constructor_Student();
 
-
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            valid = false;
-
-
-        }
-
+        studentsCatalog.put(CNP, new Constructor_Student(CNP, sex, firstName, lastName, year, month, day));
 
     }
 
@@ -73,65 +55,14 @@ public class Student_Catalog implements Student_Interface {
         return age;
     }
 
-    private void validateCatalog(boolean valid) throws ValidationException {
-        if (!valid) {
-            throw new ValidationException("Cant add student to catalog");
-        }
-    }
-
-    private void validateCNP(Long CNP, int year, int month, int day) throws ValidationException {
-
-        if (CNP == null || !Arrays.asList(13).contains(String.valueOf(CNP).length())) {
-            throw new ValidationException("Invalid CNP length");
-        }
-        if (String.valueOf(CNP).matches("[0-9]")) {
-            throw new ValidationException("Invalid CNP length");
-        }
-        if (String.valueOf(CNP).charAt(1) != String.valueOf(year).charAt(2) || String.valueOf(CNP).charAt(2) != String.valueOf(year).charAt(3)) {
-            throw new ValidationException("CNP eror");
-        }
-/*        if (String.valueOf(CNP).charAt(1) != String.valueOf(month).charAt(2) || String.valueOf(CNP).charAt(2) != String.valueOf(year).charAt(3)) {
-
-
-        }*/
-    }
-
-    private void validateSex(char sex, long CNP) throws ValidationException {
-        if (((Character.toUpperCase(sex)) != 'M') && (Character.toUpperCase(sex) != 'F')) {
-            throw new ValidationException("Sex must be M (male) or F(female)");
-        }
-        if (((Character.toUpperCase(sex)) == ('M')) && String.valueOf(CNP).charAt(0) != '1') {
-            throw new ValidationException("For men CNP need to start with 1");
-        }
-        if (((Character.toUpperCase(sex)) == 'F') && String.valueOf(CNP).charAt(0) != '2') {
-            throw new ValidationException("For female CNP need to start with 2");
-        }
-    }
-
-    private void validateFirstNameAndLastName(String str) throws ValidationException {
-        if (str == null || (str.length() < 3 || str.length() > 13)) {
-            throw new ValidationException("Enter valid first name");
-        }
-        if (!str.matches("[A-Z][a-zA-Z]*")) {
-            throw new ValidationException("First name must contains only aphabetic letters");
-        }
-    }
-
     private void validateDeletStudent(Long CNP) throws ValidationException {
         if (CNP == null || !studentsCatalog.containsKey(CNP)) {
+            LOGGER.info("This student does not exist in your catalog");
+
             throw new ValidationException("You cant delete this student");
         }
 
     }
 
-    private void validateAge(int year) throws ValidationException {
-        if ((year > LocalDate.now().getYear() - 18) || year < 1900) {
-            throw new ValidationException("A wrong year");
-        }
-    }
 
-    @Override
-    public void listByFirstNameAndBirthday() {
-
-    }
 }
